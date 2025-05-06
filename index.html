@@ -2,28 +2,33 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Открытка для SE-2216</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik+Mono+One&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         font-family: 'Bungee', cursive;
         background: #111;
         text-align: center;
         margin: 0;
-        padding: 20px;
+        padding: 15px;
         color: #fff;
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        -webkit-text-size-adjust: 100%;
       }
       .card {
         background: rgba(20, 20, 20, 0.9);
         border-radius: 5px;
-        padding: 40px;
+        padding: 25px;
+        width: 100%;
         max-width: 700px;
         margin: 0 auto;
         box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
@@ -33,34 +38,37 @@
       }
       h1 {
         color: gold;
-        font-size: 2.8em;
+        font-size: clamp(1.8em, 8vw, 2.8em);
         margin-bottom: 10px;
         text-shadow: 3px 3px 0 #000;
         font-family: 'Rubik Mono One', sans-serif;
         letter-spacing: -1px;
+        line-height: 1.2;
       }
       .group-name {
-        font-size: 1.8em;
+        font-size: clamp(0.9em, 4vw, 1.8em);
         color: #fff;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         font-weight: normal;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
         font-family: 'Press Start 2P', cursive;
+        line-height: 1.4;
       }
       .wish {
-        font-size: 1.3em;
-        margin: 30px 0;
-        line-height: 1.7;
+        font-size: clamp(1em, 4vw, 1.3em);
+        margin: 20px 0;
+        line-height: 1.5;
         color: #ccc;
       }
       .bonus {
         background: #000;
         color: gold;
-        padding: 20px;
+        padding: 15px;
         border-radius: 0;
-        margin: 30px auto;
+        margin: 25px auto;
         max-width: 500px;
+        width: 90%;
         font-weight: normal;
         cursor: pointer;
         transition: all 0.3s;
@@ -68,10 +76,10 @@
         overflow: hidden;
         border: 2px solid gold;
         font-family: 'Press Start 2P', cursive;
-        font-size: 0.9em;
+        font-size: clamp(0.7em, 3vw, 0.9em);
         letter-spacing: 1px;
       }
-      .bonus:hover {
+      .bonus:hover, .bonus:focus {
         background: gold;
         color: #000;
         transform: translateY(-5px);
@@ -82,7 +90,7 @@
       }
       .hidden {
         display: none;
-        margin-top: 30px;
+        margin-top: 20px;
         animation: fadeIn 0.5s;
       }
       @keyframes fadeIn {
@@ -97,8 +105,8 @@
       }
       .confetti {
         position: absolute;
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         background-color: gold;
         border-radius: 50%;
         animation: fall 3s linear infinite;
@@ -116,18 +124,32 @@
       #bonusText {
         color: #fff;
         text-align: left;
-        padding: 20px;
+        padding: 15px;
         background: rgba(0,0,0,0.5);
         border-left: 3px solid gold;
+        font-size: clamp(0.9em, 4vw, 1.1em);
       }
       #bonusText h2 {
         color: gold;
         margin-top: 0;
         font-family: 'Rubik Mono One', sans-serif;
+        font-size: clamp(1.1em, 5vw, 1.5em);
       }
       #bonusText p {
-        margin: 15px 0;
-        font-size: 1.1em;
+        margin: 12px 0;
+      }
+
+      @media (max-width: 480px) {
+        .card {
+          padding: 20px 15px;
+        }
+        .bonus {
+          padding: 12px;
+          margin: 20px auto;
+        }
+        #bonusText {
+          padding: 12px;
+        }
       }
     </style>
   </head>
@@ -141,7 +163,7 @@
         Баги сами исправляются и дедлайны продлеваются!
       </div>
 
-      <div class="bonus" onclick="showBonus()">
+      <div class="bonus" onclick="showBonus()" tabindex="0">
         🔥 НАЖМИ МЕНЯ 🔥
       </div>
 
@@ -163,20 +185,22 @@
 
         const bonusBtn = document.querySelector(".bonus");
         bonusBtn.style.backgroundColor = "black";
-        bonusBtn.style.color = "#000";
+        bonusBtn.style.color = "gold";
         bonusBtn.innerHTML = "🎉🎉🎉";
         bonusBtn.onclick = null;
       }
 
       function createConfetti() {
         const container = document.getElementById("confetti-container");
-        for (let i = 0; i < 100; i++) {
+        // Reduce number of confetti on mobile for better performance
+        const confettiCount = window.innerWidth < 768 ? 60 : 100;
+        for (let i = 0; i < confettiCount; i++) {
           const confetti = document.createElement("div");
           confetti.className = "confetti";
           confetti.style.left = Math.random() * 100 + "%";
           confetti.style.backgroundColor = getRandomColor();
           confetti.style.animationDuration = (Math.random() * 2 + 1) + "s";
-          confetti.style.width = (Math.random() * 8 + 4) + "px";
+          confetti.style.width = (Math.random() * 6 + 3) + "px";
           confetti.style.height = confetti.style.width;
           confetti.style.opacity = Math.random() * 0.8 + 0.2;
           container.appendChild(confetti);
